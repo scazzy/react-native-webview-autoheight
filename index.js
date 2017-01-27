@@ -1,21 +1,19 @@
 /**
  * Custom WebView with autoHeight feature
- * Also allows to add CSS and javascript if required
  *
  * @prop source: Same as WebView
  * @prop autoHeight: true|false
  * @prop defaultHeight: 100
  * @prop width: device Width
- * @prop webviewStyle: Object
  * @prop ...props
  *
  * @author Elton Jain
- * @version v1.0
- * @flow
+ * @version v1.0.2
  */
 
 import React, { Component } from 'react';
 import {
+  View,
   Dimensions,
   WebView,
 } from 'react-native';
@@ -42,14 +40,17 @@ export default class MyWebView extends Component {
   }
 
   render () {
+    const _w = this.props.width || Dimensions.get('window').width;
+    const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
+    
     return (
       <WebView
         injectedJavaScript="document.body.scrollHeight;"
-        scrollEnabled={false}
+        scrollEnabled={this.props.scrollEnabled || false}
         onNavigationStateChange={this._updateWebViewHeight}
         automaticallyAdjustContentInsets={true}
-        style={[{width: this.props.width || Dimensions.get('window').width}, this.props.webviewStyle, {height: this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight}]}
         {...this.props}
+        style={[{width: _w}, this.props.style, {height: _h}]}
       />
     )
   }
