@@ -58,14 +58,12 @@ export default class MyWebView extends Component {
   }
 
   _onMessage(e) {
-    console.log("DATA!!!!!", e.nativeEvent.data)
     this.setState({
       webViewHeight: parseInt(e.nativeEvent.data)
     });
   }
 
   render () {
-    console.log("render")
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
     return (
