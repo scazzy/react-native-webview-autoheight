@@ -63,11 +63,16 @@ export default class MyWebView extends Component {
     });
   }
 
+  stopLoading() {
+    this.webview.stopLoading();
+  }
+
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
     return (
       <WebView
+        ref={(ref) => { this.webview = ref; }}
         injectedJavaScript={'(' + String(injectedScript) + ')();'}
         scrollEnabled={this.props.scrollEnabled || false}
         onMessage={this._onMessage}
