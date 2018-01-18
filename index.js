@@ -73,7 +73,8 @@ export default class MyWebView extends Component {
     return (
       <WebView
         ref={(ref) => { this.webview = ref; }}
-        injectedJavaScript={'(' + String(injectedScript) + ')();'}
+        injectedJavaScript={'(' + String(injectedScript) + ')();' +
+          'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');'}
         scrollEnabled={this.props.scrollEnabled || false}
         onMessage={this._onMessage}
         javaScriptEnabled={true}
