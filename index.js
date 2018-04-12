@@ -49,7 +49,7 @@ export default class MyWebView extends Component {
     constructor (props: Object) {
         super(props);
         this.state = {
-            webViewHeight: defaultHeight
+            webViewHeight: props.defaultHeight
         };
 
         this._onMessage = this._onMessage.bind(this);
@@ -66,7 +66,7 @@ export default class MyWebView extends Component {
     }
 
     stopLoading() {
-        this.webview.stopLoading();
+        this.webView.stopLoading();
     }
 
     render () {
@@ -74,7 +74,7 @@ export default class MyWebView extends Component {
 
         const _w = width || windowWidth;
         const _h = autoHeight ? this.state.webViewHeight : defaultHeight;
-        
+
         return (
             <WebView
                 ref={this.setWebViewRef}
