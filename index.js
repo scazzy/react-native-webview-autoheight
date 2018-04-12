@@ -12,76 +12,80 @@
  */
 
 import React, { Component } from 'react';
-import {
-  View,
-  Dimensions,
-  WebView,
-} from 'react-native';
+import {View, Dimensions, WebView, StyleSheet} from 'react-native';
 
 const injectedScript = function() {
-  function waitForBridge() {
-    if (window.postMessage.length !== 1){
-      setTimeout(waitForBridge, 200);
+    function waitForBridge() {
+        if (window.postMessage.length != 1) {
+            setTimeout(waitForBridge, 200);
+        } else {
+            let height = 0;
+            if(document.documentElement.clientHeight>document.body.clientHeight) {
+                height = document.documentElement.clientHeight;
+            }
+            else {
+                height = document.body.clientHeight;
+            }
+            postMessage(height);
+        }
     }
-    else {
-      let height = 0;
-      if(document.documentElement.clientHeight>document.body.clientHeight)
-      {
-        height = document.documentElement.clientHeight
-      }
-      else
-      {
-        height = document.body.clientHeight
-      }
-      postMessage(height)
-    }
-  }
-  waitForBridge();
+    waitForBridge();
 };
 
+const windowWidth = Dimensions.get('window').width
+
 export default class MyWebView extends Component {
-  state = {
-    webViewHeight: Number
-  };
+    webView;
+    setWebViewRef = (ref) => this.webView = ref;
 
-  static defaultProps = {
-      autoHeight: true,
-  }
+    state = {
+        webViewHeight: Number
+    };
 
-  constructor (props: Object) {
-    super(props);
-    this.state = {
-      webViewHeight: this.props.defaultHeight
+    static defaultProps = {
+        autoHeight: true,
     }
 
-    this._onMessage = this._onMessage.bind(this);
-  }
+    constructor (props: Object) {
+        super(props);
+        this.state = {
+            webViewHeight: props.defaultHeight
+        };
 
-  _onMessage(e) {
-    this.setState({
-      webViewHeight: parseInt(e.nativeEvent.data)
-    });
-  }
+        this._onMessage = this._onMessage.bind(this);
+    }
 
-  stopLoading() {
-    this.webview.stopLoading();
-  }
+    _onMessage(e) {
+        this.setState({
+            webViewHeight: parseInt(e.nativeEvent.data)
+        });
+    }
 
-  render () {
-    const _w = this.props.width || Dimensions.get('window').width;
-    const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
-    return (
-      <WebView
-        ref={(ref) => { this.webview = ref; }}
-        injectedJavaScript={'(' + String(injectedScript) + ')();' +
-          'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');'}
-        scrollEnabled={this.props.scrollEnabled || false}
-        onMessage={this._onMessage}
-        javaScriptEnabled={true}
-        automaticallyAdjustContentInsets={true}
-        {...this.props}
-        style={[{width: _w}, this.props.style, {height: _h}]}
-      />
-    )
-  }
+    getInjectedJavaScript() {
+        return '(' + String(injectedScript) + ')();' + 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');';
+    }
+
+    stopLoading() {
+        this.webView.stopLoading();
+    }
+
+    render () {
+        const {width, autoHeight, defaultHeight, style, scrollEnabled, ...props} = this.props;
+
+        const _w = width || windowWidth;
+        const _h = autoHeight ? this.state.webViewHeight : defaultHeight;
+
+        return (
+            <WebView
+                ref={this.setWebViewRef}
+                injectedJavaScript={this.getInjectedJavaScript()}
+                scrollEnabled={scrollEnabled || false}
+                onMessage={this._onMessage}
+                automaticallyAdjustContentInsets={true}
+                {...props}
+                style={StyleSheet.flatten([{width: _w}, style, {height: _h}])}
+                javaScriptEnabled={true}
+            />
+        );
+    }
 }

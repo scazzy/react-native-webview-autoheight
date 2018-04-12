@@ -1,7 +1,7 @@
 # React Native WebView Autoheight
-React Native WebView which sets it's height automatically with minimal efforts.
+React Native WebView that sets its height automatically with minimal efforts.
 
-You can also add custom CSS style or javascript to your webview using below example.
+You can also add a custom CSS style or JavaScript to your WebView using below example.
 
 
 
@@ -10,7 +10,10 @@ You can also add custom CSS style or javascript to your webview using below exam
 
 
 ## Installation
-> npm install --save react-native-webview-autoheight
+
+Install the package using yarn or npm:
+
+```yarn add react-native-webview-autoheight``` or  ```npm install --save react-native-webview-autoheight```
 
 ## Usage
 
@@ -34,14 +37,17 @@ const htmlContent = "<h1>This is title</h1><p>Throw your entire HTML here</p>";
 
 
 ## Props
-* Same as https://facebook.github.io/react-native/docs/webview.html#props
-* `autoHeight` (default: true)
-* `width` (default: Screen width)
-* `defaultHeight` (default height unless autoHeight)
+Uses WebView properties (https://facebook.github.io/react-native/docs/webview.html#props) along with following ones:
+
+ Property                                |                   Type                   |                   Default                   | Description                           |
+| --------------------------------------- | :--------------------------------------: |:--------------------------------------: | :--------------------------------------- |
+| `autoHeight`                                | bool | true | Enable or disable auto height             |
+| `width`                                | number | window width | Sets width of WebView             |
+| `defaultHeight`                                | number | height unless autoHeight | Sets default height of the component             |
+
 
 ## How it works
-It is a very simple wrapper around the built-in React Native Webview, which updates the height of the webview based on a state change using `onNavigationStateChange`.
+It is a very simple wrapper around the built-in React Native WebView, which updates the height of the WebView based on a state change using `onNavigationStateChange`.
 
 
 ### Feel free to add issues or feature requests
-
