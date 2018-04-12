@@ -39,11 +39,11 @@ const htmlContent = "<h1>This is title</h1><p>Throw your entire HTML here</p>";
 ## Props
 Uses WebView properties (https://facebook.github.io/react-native/docs/webview.html#props) along with following ones:
 
- Property                                |                   Type                   | Description                           |
-| --------------------------------------- | :-------------------------------------- | :--------------------------------------- |
-| `autoHeight`                                | bool (default true)           | Enable or disable auto height             |
-| `width`                                |number (default Screen width)           | Sets width of WebView             |
-| `defaultHeight`                                |number (default height unless autoHeight)           | Sets default height of the component             |
+ Property                                |                   Type                   |                   Default                   | Description                           |
+| --------------------------------------- | :--------------------------------------: |:--------------------------------------: | :--------------------------------------- |
+| `autoHeight`                                | bool | true | Enable or disable auto height             |
+| `width`                                | number | window width | Sets width of WebView             |
+| `defaultHeight`                                | number | height unless autoHeight | Sets default height of the component             |
 
 
 ## How it works
@@ -51,4 +51,3 @@ It is a very simple wrapper around the built-in React Native WebView, which upda
 
 
 ### Feel free to add issues or feature requests
-
