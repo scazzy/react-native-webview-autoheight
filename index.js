@@ -24,16 +24,9 @@ const injectedScript = function() {
       setTimeout(waitForBridge, 200);
     }
     else {
-      let height = 0;
-      if(document.documentElement.clientHeight>document.body.clientHeight)
-      {
-        height = document.documentElement.clientHeight
-      }
-      else
-      {
-        height = document.body.clientHeight
-      }
-      postMessage(height)
+      postMessage(
+        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
+      )
     }
   }
   waitForBridge();
