@@ -67,6 +67,10 @@ export default class MyWebView extends Component {
     this.webview.stopLoading();
   }
 
+  reload() {
+    this.webview.reload();
+  }
+
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
