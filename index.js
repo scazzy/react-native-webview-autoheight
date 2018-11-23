@@ -52,6 +52,7 @@ export default class MyWebView extends Component {
   }
 
   _onMessage(e) {
+    if (this.props.onMessage) this.props.onMessage();
     this.setState({
       webViewHeight: parseInt(e.nativeEvent.data)
     });
