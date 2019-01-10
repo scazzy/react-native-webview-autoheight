@@ -38,9 +38,14 @@ export default class MyWebView extends Component {
     webViewHeight: Number
   };
 
+  static propTypes = {
+    onMessage: PropTypes.func
+  };
+
   static defaultProps = {
-      autoHeight: true,
-  }
+    autoHeight: true,
+    onMessage: () => {}
+  };
 
   constructor (props: Object) {
     super(props);
