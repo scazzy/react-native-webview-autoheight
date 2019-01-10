@@ -81,11 +81,11 @@ export default class MyWebView extends Component {
         ref={(ref) => { this.webview = ref; }}
         injectedJavaScript={Platform.OS === 'ios' ? iosScript : androidScript}
         scrollEnabled={this.props.scrollEnabled || false}
-        onMessage={this._onMessage}
         javaScriptEnabled={true}
         automaticallyAdjustContentInsets={true}
         {...this.props}
-        style={[{width: _w}, this.props.style, {height: _h}]}
+	onMessage={this._onMessage}
+	style={[{ width: _w }, this.props.style, { height: _h }]}
       />
     )
   }
