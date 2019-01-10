@@ -18,6 +18,7 @@ import {
   WebView,
   Platform,
 } from 'react-native';
+import PropTypes from "prop-types";
 
 const injectedScript = function() {
   function waitForBridge() {
@@ -57,9 +58,11 @@ export default class MyWebView extends Component {
   }
 
   _onMessage(e) {
+    const { onMessage } = this.props;
     this.setState({
       webViewHeight: parseInt(e.nativeEvent.data)
     });
+    onMessage(e);
   }
 
   stopLoading() {
