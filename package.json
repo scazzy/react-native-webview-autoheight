@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/scazzy/react-native-webview-autoheight/issues"
   },
-  "homepage": "https://github.com/scazzy/react-native-webview-autoheight#readme"
+  "homepage": "https://github.com/scazzy/react-native-webview-autoheight#readme",
+  "dependencies": {
+    "react-native-webview": "^5.7.1"
+  }
 }
