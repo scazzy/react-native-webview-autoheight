@@ -15,9 +15,10 @@ import React, { Component } from 'react';
 import {
   View,
   Dimensions,
-  WebView,
   Platform,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
+
 
 //https://github.com/facebook/react-native/issues/10865
 const patchPostMessageFunction = function() {

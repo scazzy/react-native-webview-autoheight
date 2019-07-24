@@ -17,6 +17,9 @@
     "auto",
     "height"
   ],
+  "peerDependencies": {
+    "react-native-webview": "5.9.0"
+  },
   "author": "Elton Jain",
   "license": "ISC",
   "bugs": {
