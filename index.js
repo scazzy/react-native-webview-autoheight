@@ -20,23 +20,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 
-//https://github.com/facebook/react-native/issues/10865
-const patchPostMessageFunction = function() {
-  var originalPostMessage = window.postMessage;
-
-  var patchedPostMessage = function(message, targetOrigin, transfer) {
-    originalPostMessage(message, targetOrigin, transfer);
-  };
-
-  patchedPostMessage.toString = function() {
-    return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
-  };
-
-  window.postMessage = patchedPostMessage;
-};
-
 const injectedScript = function() {
-
   function postSize() {
     //https://stackoverflow.com/questions/1145850/how-to-get-height-of-entire-document-with-javascript
     var body = document.body, html = document.documentElement;
@@ -44,27 +28,26 @@ const injectedScript = function() {
     var maxHeight = Math.max( body.scrollHeight, body.offsetHeight,
                         html.clientHeight, html.scrollHeight, html.offsetHeight );
 
-    window.postMessage(maxHeight);
+    console.log('postSize maxHeight', maxHeight)
+    window.ReactNativeWebView.postMessage(maxHeight);
   }
 
-  function waitForBridge() {
-    if (window.postMessage.length !== 1){
-      setTimeout(waitForBridge, 200);
-    }
-    else {
-      postSize();
-
-      //trigger when DOM changes
-      var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-      var observer = new MutationObserver(postSize);
-        observer.observe(document, {
-        subtree: true,
-        attributes: true
-      });
-    }
+  var postSizeTimeout;
+  function debouncedPostSize() {
+    clearTimeout(postSizeTimeout);
+    postSizeTimeout = setTimeout(function () {
+      postSize()
+    }, 500)
   }
 
-  waitForBridge();
+  debouncedPostSize();
+  //trigger when DOM changes
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  var observer = new MutationObserver(debouncedPostSize);
+    observer.observe(document, {
+    subtree: true,
+    attributes: true
+  });
 };
 
 export default class MyWebView extends Component {
@@ -102,14 +85,12 @@ export default class MyWebView extends Component {
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
-    const patchPostMessageJsCode = '(' + String(patchPostMessageFunction) + ')();';
-    const androidScript = patchPostMessageJsCode + '(' + String(injectedScript) + ')();';
-    const iosScript = '(' + String(injectedScript) + ')();' + patchPostMessageJsCode;
+    const injectedJavaScript = '(' + String(injectedScript) + ')();';
 
     return (
       <WebView
         ref={(ref) => { this.webview = ref; }}
-        injectedJavaScript={Platform.OS === 'ios' ? iosScript : androidScript}
+        injectedJavaScript={injectedJavaScript}
         scrollEnabled={this.props.scrollEnabled || false}
         onMessage={this._onMessage}
         javaScriptEnabled={true}
