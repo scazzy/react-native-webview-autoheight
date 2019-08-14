@@ -15,22 +15,39 @@ import React, { Component } from 'react';
 import {
   View,
   Dimensions,
-  WebView,
   Platform,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
+
 
 const injectedScript = function() {
-  function waitForBridge() {
-    if (window.postMessage.length !== 1){
-      setTimeout(waitForBridge, 200);
-    }
-    else {
-      postMessage(
-        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
-      )
-    }
+  function postSize() {
+    //https://stackoverflow.com/questions/1145850/how-to-get-height-of-entire-document-with-javascript
+    var body = document.body, html = document.documentElement;
+
+    var maxHeight = Math.max( body.scrollHeight, body.offsetHeight,
+                        html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+    console.log('postSize maxHeight', maxHeight)
+    window.ReactNativeWebView.postMessage(maxHeight);
   }
-  waitForBridge();
+
+  var postSizeTimeout;
+  function debouncedPostSize() {
+    clearTimeout(postSizeTimeout);
+    postSizeTimeout = setTimeout(function () {
+      postSize()
+    }, 500)
+  }
+
+  debouncedPostSize();
+  //trigger when DOM changes
+  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  var observer = new MutationObserver(debouncedPostSize);
+    observer.observe(document, {
+    subtree: true,
+    attributes: true
+  });
 };
 
 export default class MyWebView extends Component {
@@ -68,13 +85,12 @@ export default class MyWebView extends Component {
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
-    const androidScript = 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');' +
-    '(' + String(injectedScript) + ')();';
-    const iosScript = '(' + String(injectedScript) + ')();' + 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');';
+    const injectedJavaScript = '(' + String(injectedScript) + ')();';
+
     return (
       <WebView
         ref={(ref) => { this.webview = ref; }}
-        injectedJavaScript={Platform.OS === 'ios' ? iosScript : androidScript}
+        injectedJavaScript={injectedJavaScript}
         scrollEnabled={this.props.scrollEnabled || false}
         onMessage={this._onMessage}
         javaScriptEnabled={true}
