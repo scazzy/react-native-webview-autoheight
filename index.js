@@ -18,6 +18,7 @@ import {
   WebView,
   Platform,
 } from 'react-native';
+import PropTypes from "prop-types";
 
 const injectedScript = function() {
   function waitForBridge() {
@@ -38,9 +39,14 @@ export default class MyWebView extends Component {
     webViewHeight: Number
   };
 
+  static propTypes = {
+    onMessage: PropTypes.func
+  };
+
   static defaultProps = {
-      autoHeight: true,
-  }
+    autoHeight: true,
+    onMessage: () => {}
+  };
 
   constructor (props: Object) {
     super(props);
@@ -52,9 +58,11 @@ export default class MyWebView extends Component {
   }
 
   _onMessage(e) {
+    const { onMessage } = this.props;
     this.setState({
       webViewHeight: parseInt(e.nativeEvent.data)
     });
+    onMessage(e);
   }
 
   stopLoading() {
@@ -76,11 +84,11 @@ export default class MyWebView extends Component {
         ref={(ref) => { this.webview = ref; }}
         injectedJavaScript={Platform.OS === 'ios' ? iosScript : androidScript}
         scrollEnabled={this.props.scrollEnabled || false}
-        onMessage={this._onMessage}
         javaScriptEnabled={true}
         automaticallyAdjustContentInsets={true}
         {...this.props}
-        style={[{width: _w}, this.props.style, {height: _h}]}
+	onMessage={this._onMessage}
+	style={[{ width: _w }, this.props.style, { height: _h }]}
       />
     )
   }
