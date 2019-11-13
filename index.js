@@ -69,9 +69,12 @@ export default class MyWebView extends Component {
   }
 
   _onMessage(e) {
-    this.setState({
-      webViewHeight: parseInt(e.nativeEvent.data)
-    });
+    const maxHeight = this.props.maxHeight;
+    let webViewHeight = parseInt(e.nativeEvent.data);
+    if (maxHeight && webViewHeight > maxHeight) {
+      webViewHeight = maxHeight
+    }
+    this.setState({ webViewHeight });
   }
 
   stopLoading() {
