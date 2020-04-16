@@ -1,6 +1,6 @@
 {
   "name": "react-native-webview-autoheight",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "React Native WebView with AutoHeight",
   "main": "index.js",
   "scripts": {
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/scazzy/react-native-webview-autoheight/issues"
   },
-  "homepage": "https://github.com/scazzy/react-native-webview-autoheight#readme"
+  "homepage": "https://github.com/scazzy/react-native-webview-autoheight#readme",
+  "publishConfig": {
+    "registry": "https://repo.eachscape.net/repository/npm-internal"
+  }
 }
