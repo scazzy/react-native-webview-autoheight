@@ -18,7 +18,7 @@ import PropTypes from "prop-types";
 
 const injectedScript = function() {
   function waitForBridge() {
-    if (window.postMessage.length !== 1){
+    if (window.ReactNativeWebView.postMessage.length > 1){
       setTimeout(waitForBridge, 200);
     }
     else {
@@ -72,7 +72,7 @@ export default class MyWebView extends Component {
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
-    const androidScript = 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');' +
+    const androidScript = 'window.ReactNativeWebView.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');' +
     '(' + String(injectedScript) + ')();';
     const iosScript = '(' + String(injectedScript) + ')();' + 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');';
     return (
