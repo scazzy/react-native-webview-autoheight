@@ -62,7 +62,6 @@ export default class MyWebView extends Component {
   _onMessage(e) {
     const { onMessage } = this.props;
     const newHeight = parseInt(e.nativeEvent.data);
-    console.log(newHeight, this.state.webViewHeight);
     if(!isNaN(newHeight) && newHeight !== this.state.webViewHeight) {
       this.setState({webViewHeight: newHeight});
       onMessage(e);
