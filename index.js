@@ -28,8 +28,8 @@ const injectedScript = function() {
       setTimeout(waitForBridge, 200);
     }
     else {
-      postResize();
       new ResizeObserver(postResize).observe(document.body);
+      postResize();
     }
   }
   waitForBridge();
@@ -46,6 +46,7 @@ export default class MyWebView extends Component {
 
   static defaultProps = {
     autoHeight: true,
+    defaultHeight: 100,
     onMessage: () => {}
   };
 
@@ -60,10 +61,12 @@ export default class MyWebView extends Component {
 
   _onMessage(e) {
     const { onMessage } = this.props;
-    this.setState({
-      webViewHeight: parseInt(e.nativeEvent.data)
-    });
-    onMessage(e);
+    const newHeight = parseInt(e.nativeEvent.data);
+    console.log(newHeight, this.state.webViewHeight);
+    if(!isNaN(newHeight) && newHeight !== this.state.webViewHeight) {
+      this.setState({webViewHeight: newHeight});
+      onMessage(e);
+    }
   }
 
   stopLoading() {
@@ -88,8 +91,8 @@ export default class MyWebView extends Component {
         javaScriptEnabled={true}
         automaticallyAdjustContentInsets={true}
         {...this.props}
-	onMessage={this._onMessage}
-	style={[{ width: _w }, this.props.style, { height: _h }]}
+        onMessage={this._onMessage}
+        style={[{ width: _w }, this.props.style, { height: _h }]}
       />
     )
   }
