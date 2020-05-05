@@ -17,14 +17,19 @@ import { WebView } from 'react-native-webview';
 import PropTypes from "prop-types";
 
 const injectedScript = function() {
+  function postResize() {
+    window.ReactNativeWebView.postMessage(
+        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
+    )
+  };
+
   function waitForBridge() {
-    if (window.postMessage.length !== 1){
+    if (window.ReactNativeWebView.postMessage.length !== 0){
       setTimeout(waitForBridge, 200);
     }
     else {
-      postMessage(
-        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
-      )
+      new ResizeObserver(postResize).observe(document.body);
+      postResize();
     }
   }
   waitForBridge();
@@ -41,6 +46,7 @@ export default class MyWebView extends Component {
 
   static defaultProps = {
     autoHeight: true,
+    defaultHeight: 100,
     onMessage: () => {}
   };
 
@@ -55,10 +61,11 @@ export default class MyWebView extends Component {
 
   _onMessage(e) {
     const { onMessage } = this.props;
-    this.setState({
-      webViewHeight: parseInt(e.nativeEvent.data)
-    });
-    onMessage(e);
+    const newHeight = parseInt(e.nativeEvent.data);
+    if(!isNaN(newHeight) && newHeight !== this.state.webViewHeight) {
+      this.setState({webViewHeight: newHeight});
+      onMessage(e);
+    }
   }
 
   stopLoading() {
@@ -72,7 +79,7 @@ export default class MyWebView extends Component {
   render () {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
-    const androidScript = 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');' +
+    const androidScript = 'window.ReactNativeWebView.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');' +
     '(' + String(injectedScript) + ')();';
     const iosScript = '(' + String(injectedScript) + ')();' + 'window.postMessage = String(Object.hasOwnProperty).replace(\'hasOwnProperty\', \'postMessage\');';
     return (
@@ -83,8 +90,8 @@ export default class MyWebView extends Component {
         javaScriptEnabled={true}
         automaticallyAdjustContentInsets={true}
         {...this.props}
-	onMessage={this._onMessage}
-	style={[{ width: _w }, this.props.style, { height: _h }]}
+        onMessage={this._onMessage}
+        style={[{ width: _w }, this.props.style, { height: _h }]}
       />
     )
   }
