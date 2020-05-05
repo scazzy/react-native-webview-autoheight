@@ -28,8 +28,8 @@ const injectedScript = function() {
       setTimeout(waitForBridge, 200);
     }
     else {
-      postResize();
       new ResizeObserver(postResize).observe(document.body);
+      postResize();
     }
   }
   waitForBridge();
