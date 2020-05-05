@@ -17,14 +17,19 @@ import { WebView } from 'react-native-webview';
 import PropTypes from "prop-types";
 
 const injectedScript = function() {
+  function postResize() {
+    window.ReactNativeWebView.postMessage(
+        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
+    )
+  };
+
   function waitForBridge() {
-    if (window.ReactNativeWebView.postMessage.length > 1){
+    if (window.ReactNativeWebView.postMessage.length !== 0){
       setTimeout(waitForBridge, 200);
     }
     else {
-      postMessage(
-        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
-      )
+      postResize();
+      new ResizeObserver(postResize).observe(document.body);
     }
   }
   waitForBridge();
