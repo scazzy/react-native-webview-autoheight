@@ -18,9 +18,7 @@ import PropTypes from "prop-types";
 
 const injectedScript = function() {
   function postResize() {
-    window.ReactNativeWebView.postMessage(
-        Math.max(document.documentElement.clientHeight, document.documentElement.scrollHeight, document.body.clientHeight, document.body.scrollHeight)
-    )
+    window.ReactNativeWebView.postMessage(document.body.firstElementChild.clientHeight + 25)
   };
 
   function waitForBridge() {
