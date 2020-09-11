@@ -25,8 +25,7 @@ const injectedScript = function() {
     //https://stackoverflow.com/questions/1145850/how-to-get-height-of-entire-document-with-javascript
     var body = document.body, html = document.documentElement;
 
-    var maxHeight = Math.max( body.scrollHeight, body.offsetHeight,
-                        html.clientHeight, html.scrollHeight, html.offsetHeight );
+    var maxHeight = Math.max( body.scrollHeight, body.offsetHeight, html.offsetHeight );
 
     console.log('postSize maxHeight', maxHeight)
     window.ReactNativeWebView.postMessage(maxHeight);
@@ -48,6 +47,7 @@ const injectedScript = function() {
     subtree: true,
     attributes: true
   });
+  window.addEventListener('resize', debouncedPostSize);
 };
 
 export default class MyWebView extends Component {
@@ -57,6 +57,7 @@ export default class MyWebView extends Component {
 
   static defaultProps = {
       autoHeight: true,
+      noWidth: false,
   }
 
   constructor (props: Object) {
@@ -86,9 +87,12 @@ export default class MyWebView extends Component {
   }
 
   render () {
+    
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
     const injectedJavaScript = '(' + String(injectedScript) + ')();';
+    let style = !!this.props.noWidth ? []: [{width: _w}]
+    style = style.concat([this.props.style, {height: _h}]); 
 
     return (
       <WebView
@@ -99,7 +103,7 @@ export default class MyWebView extends Component {
         javaScriptEnabled={true}
         automaticallyAdjustContentInsets={true}
         {...this.props}
-        style={[{width: _w}, this.props.style, {height: _h}]}
+        style={style}
       />
     )
   }
