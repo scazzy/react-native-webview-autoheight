@@ -20,7 +20,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 
-const injectedScript = function() {
+const injectedScript = `function() {
   function postSize() {
     //https://stackoverflow.com/questions/1145850/how-to-get-height-of-entire-document-with-javascript
     var body = document.body, html = document.documentElement;
@@ -48,7 +48,7 @@ const injectedScript = function() {
     attributes: true
   });
   window.addEventListener('resize', debouncedPostSize);
-};
+}`
 
 export default class MyWebView extends Component {
   state = {
@@ -90,7 +90,10 @@ export default class MyWebView extends Component {
     
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
+
     const injectedJavaScript = '(' + String(injectedScript) + ')();';
+
+    console.log('@96', injectedJavaScript)
     let style = !!this.props.noWidth ? []: [{width: _w}]
     style = style.concat([this.props.style, {height: _h}]); 
 
