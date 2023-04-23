@@ -93,7 +93,6 @@ export default class MyWebView extends Component {
 
     const injectedJavaScript = '(' + String(injectedScript) + ')();';
 
-    console.log('@96', injectedJavaScript)
     let style = !!this.props.noWidth ? []: [{width: _w}]
     style = style.concat([this.props.style, {height: _h}]); 
 
